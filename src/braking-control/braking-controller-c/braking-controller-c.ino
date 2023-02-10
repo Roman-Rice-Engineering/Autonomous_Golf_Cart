@@ -14,17 +14,15 @@
 
 
 /* Define digital pin connections */
-#define INPUT_ENCODER_1 0
-#define INPUT_ENCODER_2 2
-#define HOME_BUTTON 12
+#define HOME_BUTTON 5
 
-#define MOTOR_ENCODER_1 14
-#define MOTOR_ENCODER_2 15
+#define MOTOR_ENCODER_1 13
+#define MOTOR_ENCODER_2 12
 
-#define LIMIT_SWITCH 13
+#define LIMIT_SWITCH 2
 
-#define MOTOR_DRIVE_1 4
-#define MOTOR_DRIVE_2 5
+#define MOTOR_DRIVE_1 14
+#define MOTOR_DRIVE_2 16
 
 
 const ssize_t motor_motion_limit = 10000;
@@ -37,19 +35,6 @@ void ICACHE_RAM_ATTR motor_encoder_isr() {
     encoder_position++;
   } else {
     encoder_position--;
-  }
-}
-
-
-void ICACHE_RAM_ATTR control_encoder_isr() {
-  if (digitalRead(INPUT_ENCODER_2) == LOW) {
-    if (requested_encoder_position < motor_motion_limit) {
-      requested_encoder_position += INPUT_ENCODER_SENSITIVITY;
-    }
-  } else {
-    if (requested_encoder_position > 0) {
-      requested_encoder_position -= INPUT_ENCODER_SENSITIVITY;
-    }
   }
 }
 
@@ -88,10 +73,7 @@ void setup() {
   pinMode(HOME_BUTTON, INPUT_PULLUP);
   pinMode(MOTOR_ENCODER_1, INPUT);
   pinMode(MOTOR_ENCODER_2, INPUT);
-  pinMode(INPUT_ENCODER_2, INPUT);
-  pinMode(INPUT_ENCODER_1, INPUT);
   attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_1), motor_encoder_isr, RISING);
-  attachInterrupt(digitalPinToInterrupt(INPUT_ENCODER_1), control_encoder_isr, RISING);
   Serial.begin(9600);
 }
 
