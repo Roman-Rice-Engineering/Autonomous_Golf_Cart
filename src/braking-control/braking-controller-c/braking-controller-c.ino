@@ -93,10 +93,21 @@ void loop() {
   if (oldtime < millis() - 100) {
     oldtime = millis();
     Serial.println(encoder_position);
-  }
+    if (Serial.available()) {
+      String input = Serial.readStringUntil('\n');
+      if (input != "") {
+        requested_encoder_position = input.toInt();
+        if(requested_encoder_position < 0){
+          requested_encoder_position = 0;
+        }else if(requested_encoder_position > motor_motion_limit){
+          requested_encoder_position = motor_motion_limit;
+        }
+      }
+    }
 
-  /* Check if homing button was pressed */
-  if (digitalRead(HOME_BUTTON) == 0) {
-    home_motor();
+    /* Check if homing button was pressed */
+    if (digitalRead(HOME_BUTTON) == 0) {
+      home_motor();
+    }
   }
 }
